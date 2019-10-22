@@ -38,7 +38,6 @@ public class NoteRepositoryImpl {
         long rowId = db.insert(DairyDatabaseContract.NoteEntry.TABLE_NAME, null, values);
         db.close();
         Log.d(TAG, "Note SAVED");
-        Toast.makeText(mDatabaseHelper.getContext(), " Note saved", Toast.LENGTH_SHORT ).show();
         return rowId;
     }
 

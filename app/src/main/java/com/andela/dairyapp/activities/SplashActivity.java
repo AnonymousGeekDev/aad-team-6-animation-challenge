@@ -105,7 +105,7 @@ public class SplashActivity extends AppCompatActivity {
         mTextFadeInAnimator = ObjectAnimator.ofFloat(mWelcomeText, "alpha", 0.0f, 1.0f);
         mTextFadeInAnimator.setDuration(ANIMATION_DURATION);
 
-        mTextDownwardMovementAnimator = ObjectAnimator.ofFloat(mWelcomeText, "translationY", 0f, 100f);
+        mTextDownwardMovementAnimator = ObjectAnimator.ofFloat(mWelcomeText, "translationY", 0f, 200f);
         mTextDownwardMovementAnimator.setDuration(ANIMATION_DURATION);
 
         AnimatorSet set = new AnimatorSet();

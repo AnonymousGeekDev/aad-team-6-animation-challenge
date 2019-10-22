@@ -11,7 +11,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -59,7 +58,7 @@ public class HomeActivity extends AppCompatActivity {
     RecyclerView notesRecyclerView;
     TextView emptyTV;
     boolean doubleBackToExitPressedOnce = false;
-    boolean pendingIntroAnimation ;
+    boolean pendingIntroAnimation;
 
 
     private FirebaseAuth mFirebaseAuth;
@@ -99,7 +98,7 @@ public class HomeActivity extends AppCompatActivity {
 
         fab = findViewById(R.id.fab_action_btn);
 
-        AnimatorSet alphaAnimation =(AnimatorSet) AnimatorInflater.loadAnimator(this,R.animator.fab_add_note_anim);
+        AnimatorSet alphaAnimation = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.fab_add_note_anim);
         alphaAnimation.setTarget(fab);
         alphaAnimation.start();
 
@@ -150,13 +149,12 @@ public class HomeActivity extends AppCompatActivity {
                             field_shake.setTarget(eventName);
                             field_shake.start();
 
-                        }else if(TextUtils.isEmpty(event_desc)){
+                        } else if (TextUtils.isEmpty(event_desc)) {
                             // Error message added to the field and animation
                             eventDesc.setError(getResources().getString(R.string.required_field));
                             field_shake.setTarget(eventDesc);
                             field_shake.start();
-                        }else
-                            {
+                        } else {
                             //TODO, save the information in a database or file :-)
                             Note note = new Note();
                             note.setNote_name(event_name);
@@ -190,20 +188,20 @@ public class HomeActivity extends AppCompatActivity {
         Toast.makeText(this, "Signing Out", Toast.LENGTH_SHORT).show();
         AuthUI.getInstance()
                 .signOut(this)
-        .addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull Task<Void> task) {
-                if (task.isSuccessful()){
-                    navigateToSignIn();
-                } else {
-                    Snackbar.make(notesRecyclerView, "Error happended during sign out! Try again", Snackbar.LENGTH_LONG).show();
-                }
-            }
-        });
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            navigateToSignIn();
+                        } else {
+                            Snackbar.make(notesRecyclerView, "Error happended during sign out! Try again", Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+                });
 
     }
 
-    private void navigateToSignIn(){
+    private void navigateToSignIn() {
         Intent authIntent = new Intent(this, AuthActivity.class);
         startActivity(authIntent);
         finish();
@@ -273,23 +271,22 @@ public class HomeActivity extends AppCompatActivity {
                             field_shake.setTarget(eventName);
                             field_shake.start();
 
-                        }else if(TextUtils.isEmpty(event_desc)){
+                        } else if (TextUtils.isEmpty(event_desc)) {
                             // Error message added to the field and animation
                             eventDesc.setError(getResources().getString(R.string.required_field));
                             field_shake.setTarget(eventDesc);
                             field_shake.start();
-                        } else {
                             //TODO, save the information in a database or file :-)
                             Note note = new Note();
                             note.setNote_name(event_name);
                             note.setNote_description(event_desc);
-                            Random random = new Random();
-                            int color = Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
-                            note.setColor_code(color);
-                            Date date = new Date();
-                            DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-                            String date_created = dateFormat.format(date);
-                            note.setCreated_at(date_created);
+                            note.setColor_code(generateColor());
+                            note.setCreated_at(createAt());
+
+                            NoteRepositoryImpl noteRepository =
+                                    ((DairyApplication) saveBtn.getContext().getApplicationContext()).getNoteRepository();
+                            long rowId = noteRepository.insert(note);
+                            note.set_id(Integer.parseInt(String.valueOf(rowId)));
                             boolean success = notesAdapter.addNote(note);
                             if (success) {
                                 dialog.dismiss();
@@ -313,7 +310,10 @@ public class HomeActivity extends AppCompatActivity {
                 Snackbar.make(notesRecyclerView, "Sorting by Z - A...", Snackbar.LENGTH_LONG).show();
                 break;
             case R.id.action_about:
-                Snackbar.make(notesRecyclerView, "About", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(notesRecyclerView, "About", Snackbar.LENGTH_SHORT).show();
+                Intent intent
+                        = new Intent(this, AboutActivity.class);
+                startActivity(intent);
                 break;
             case R.id.logout:
                 logout();

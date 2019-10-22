@@ -1,27 +1,34 @@
 <resources>
-  <string name="app_name">DiaryApp</string>
-  <string name="title_activity_home">HomeActivity</string>
-  <string name="nothing_show_text">Dairy \n Nothing to show</string>
-  <string name="diary_name">Diary Name</string>
-  <string name="diary_description">Diary description</string>
-  <string name="cancel">Cancel</string>
-  <string name="save">Save</string>
-  <string name="new_diary">New Diary</string>
-  <string name="about">About</string>
-  <string name="sort">Sort</string>
-  <string name="by_date">By date</string>
-  <string name="by_order">By order A - Z</string>
-  <string name="by_order_z_a">By order Z-A</string>
-  <string name="edit">Edit</string>
-  <string name="delete">Delete</string>
-  <string name="share">Share</string>
-  <string name="quit">Quit</string>
+    <string name="app_name">DiaryApp</string>
+    <string name="title_activity_home">HomeActivity</string>
+    <string name="nothing_show_text">Dairy \n Nothing to show</string>
+    <string name="diary_name">Diary Name</string>
+    <string name="diary_description">Diary description</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="new_diary">New Diary</string>
+    <string name="about">About</string>
+    <string name="sort">Sort</string>
+    <string name="by_date">By date</string>
+    <string name="by_order">By order A - Z</string>
+    <string name="by_order_z_a">By order Z-A</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="share">Share</string>
+    <string name="quit">Quit</string>
 
-  <string name="logout">log out</string>
-  <string name="password_hint_text">Enter Password</string>
-  <string name="email_hint_text">Enter Email Address</string>
-  <string name="login_btn_text">Login</string>
-  <string name="welcome_message">Welcome to your diary!</string>
-  <string name="required_field">Required field!</string>
+
+    <string name="logout">Log out</string>
     <string name="welcome_back_user">Welcome back</string>
+    <string name="password_hint_text">Enter Password</string>
+    <string name="email_hint_text">Enter Email Address</string>
+    <string name="login_btn_text">Login</string>
+    <string name="welcome_message">Welcome to your diary!</string>
+    <string name="required_field">Required field!</string>
+    <string name="detailed_info">
+        Dairy app is a simple application that allows a user to record his/her daily life and thoughts.\n
+        It was built as an exercise for the Google Africa Certification scholarships ALC Phase 2 Challenge to test our animations know-how. \n
+        The app requires the user to be authenticated and then get access to storing information about his/her self locally in the device.\n
+        Users can click on each item on the home screen to navigate to the details about the selected entry where there are options allowing the user to share or delete the note.
+    </string>
 </resources>

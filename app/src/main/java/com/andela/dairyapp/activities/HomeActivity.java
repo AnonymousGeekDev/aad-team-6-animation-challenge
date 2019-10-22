@@ -1,5 +1,6 @@
 package com.andela.dairyapp.activities;
 
+import android.animation.Animator;
 import android.animation.AnimatorInflater;
 import android.animation.AnimatorSet;
 import android.app.Dialog;
@@ -119,6 +120,7 @@ public class HomeActivity extends AppCompatActivity {
                 final Button cancelBtn = layoutView.findViewById(R.id.action_cancel);
                 final Button saveBtn = layoutView.findViewById(R.id.action_save);
 
+
                 final Dialog dialog = dialogBuilder.create();
                 //make sure the dialog is opaque
                 Objects.requireNonNull(dialog.getWindow()).getAttributes().windowAnimations = R.style.DialogAnimation;
@@ -139,10 +141,23 @@ public class HomeActivity extends AppCompatActivity {
                         String event_desc = eventDesc.getText().toString();
 
                         //TODO, should be fixed
+                        // loading animation file
+                        final Animator field_shake = AnimatorInflater.loadAnimator(getApplicationContext(), R.animator.empty_field_animation);
 
-                        if (TextUtils.isEmpty(event_name) || TextUtils.isEmpty(event_desc)) {
-                            Snackbar.make(v, "Sorry one or more fields are empty", Snackbar.LENGTH_LONG).show();
-                        } else {
+                        if (TextUtils.isEmpty(event_name)) {
+                            //Snackbar.make(v, "Sorry one or more fields are empty", Snackbar.LENGTH_LONG).show();
+                            // Error message added to the field and animation
+                            eventName.setError(getResources().getString(R.string.required_field));
+                            field_shake.setTarget(eventName);
+                            field_shake.start();
+
+                        }else if(TextUtils.isEmpty(event_desc)){
+                            // Error message added to the field and animation
+                            eventDesc.setError(getResources().getString(R.string.required_field));
+                            field_shake.setTarget(eventDesc);
+                            field_shake.start();
+                        }else
+                            {
                             //TODO, save the information in a database or file :-)
                             Note note = new Note();
                             note.setNote_name(event_name);
@@ -248,9 +263,21 @@ public class HomeActivity extends AppCompatActivity {
                         String event_desc = eventDesc.getText().toString();
 
                         //TODO, should be fixed
+                        // loading animation file
+                        final Animator field_shake = AnimatorInflater.loadAnimator(getApplicationContext(), R.animator.empty_field_animation);
 
-                        if (TextUtils.isEmpty(event_name) || TextUtils.isEmpty(event_desc)) {
-                            Snackbar.make(v, "Sorry one or more fields are empty", Snackbar.LENGTH_LONG).show();
+                        if (TextUtils.isEmpty(event_name)) {
+                            //Snackbar.make(v, "Sorry one or more fields are empty", Snackbar.LENGTH_LONG).show();
+                            // Error message added to the field and animation
+                            eventName.setError(getResources().getString(R.string.required_field));
+                            field_shake.setTarget(eventName);
+                            field_shake.start();
+
+                        }else if(TextUtils.isEmpty(event_desc)){
+                            // Error message added to the field and animation
+                            eventDesc.setError(getResources().getString(R.string.required_field));
+                            field_shake.setTarget(eventDesc);
+                            field_shake.start();
                         } else {
                             //TODO, save the information in a database or file :-)
                             Note note = new Note();

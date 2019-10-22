@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
+import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.BounceInterpolator;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,9 +21,13 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView mAppLogo;
     private TextView mWelcomeText;
-    private View mLayout;
-    private ProgressBar loadingProgressAnim;
-    public static final int ANIM_DURATION = 1500;
+    private ProgressBar mLoadingProgressAnim;
+    public static final int ANIMATION_DURATION = 1500;
+    private ObjectAnimator mLogoFadeInAnimator;
+    private ObjectAnimator mLogoDownwardMovementAnimator;
+    private ObjectAnimator mTextFadeInAnimator;
+    private ObjectAnimator mTextDownwardMovementAnimator;
+    private ViewPropertyAnimator mScaleAndBounceAnimator;
 
 
     @Override
@@ -31,12 +37,13 @@ public class MainActivity extends AppCompatActivity {
 
         mAppLogo = findViewById(R.id.app_logo);
         mWelcomeText = findViewById(R.id.intro_message);
-        mLayout = findViewById(R.id.base_layout);
-        loadingProgressAnim = findViewById(R.id.progressBar);
+        mLoadingProgressAnim = findViewById(R.id.progressBar);
 
 
         mAppLogo.setVisibility(View.GONE);
         mWelcomeText.setVisibility(View.GONE);
+        mLoadingProgressAnim.setVisibility(View.VISIBLE);
+
 
         launchInitialAnimation();
 
@@ -45,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 Intent toHomeActivity = new Intent(MainActivity.this, HomeActivity.class);
                 startActivity(toHomeActivity);
+                finish();
             }
         }, 3500);
 
@@ -53,27 +61,39 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void launchInitialAnimation() {
-        ObjectAnimator logoFadeInAnimator = ObjectAnimator.ofFloat(mAppLogo, "alpha", 0.0f, 1.0f);
-        logoFadeInAnimator.setDuration(ANIM_DURATION)
+        mLogoFadeInAnimator = ObjectAnimator.ofFloat(mAppLogo, "alpha", 0.0f, 1.0f);
+        mLogoFadeInAnimator.setDuration(ANIMATION_DURATION)
                 .setInterpolator(new AccelerateDecelerateInterpolator());
 
-        // This anim is used for moving the logo downwards
-        ObjectAnimator logoDownwardMovementAnimator = ObjectAnimator.ofFloat(mAppLogo, "translationY", 0f, 100f);
-        logoDownwardMovementAnimator.setDuration(ANIM_DURATION)
+        // This animation is used for moving the logo downwards
+        mLogoDownwardMovementAnimator = ObjectAnimator.ofFloat(mAppLogo, "translationY", 0f, 150f);
+        mLogoDownwardMovementAnimator.setDuration(ANIMATION_DURATION)
                 .setInterpolator(new AccelerateDecelerateInterpolator());
 
+        mScaleAndBounceAnimator = mAppLogo.animate();
 
-        ObjectAnimator textFadeInAnimator = ObjectAnimator.ofFloat(mWelcomeText, "alpha", 0.0f, 1.0f);
-        textFadeInAnimator.setDuration(ANIM_DURATION);
+        //The animation used for 'zooming' the logo in, while adding a bounce effect.
+        //Using @ViewPropertyAnimator for conciseness purposes, and for compatibility testing.
+        //TODO Write instrumentation tests for the animators
+        mScaleAndBounceAnimator.scaleX(1.5f)
+                .scaleY(1.5f)
+                .setInterpolator(new BounceInterpolator())
+                .setDuration(ANIMATION_DURATION);
 
-        ObjectAnimator textDownwardMovementAnimator = ObjectAnimator.ofFloat(mWelcomeText, "translationY", 0f, 100f);
-        textDownwardMovementAnimator.setDuration(ANIM_DURATION);
+        mTextFadeInAnimator = ObjectAnimator.ofFloat(mWelcomeText, "alpha", 0.0f, 1.0f);
+        mTextFadeInAnimator.setDuration(ANIMATION_DURATION);
+
+        mTextDownwardMovementAnimator = ObjectAnimator.ofFloat(mWelcomeText, "translationY", 0f, 100f);
+        mTextDownwardMovementAnimator.setDuration(ANIMATION_DURATION);
 
         AnimatorSet set = new AnimatorSet();
-        set.playTogether(logoFadeInAnimator, logoDownwardMovementAnimator, textFadeInAnimator, textDownwardMovementAnimator);
+        set.playTogether(mLogoFadeInAnimator, mLogoDownwardMovementAnimator, mTextFadeInAnimator, mTextDownwardMovementAnimator);
+        mScaleAndBounceAnimator.start();
         set.start();
 
         mAppLogo.setVisibility(View.VISIBLE);
         mWelcomeText.setVisibility(View.VISIBLE);
+
+
     }
 }

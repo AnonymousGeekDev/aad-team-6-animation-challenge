@@ -188,7 +188,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private void logout() {
-        Toast.makeText(this, "Signing Out", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Signing Out", Toast.LENGTH_SHORT).show();
         AuthUI.getInstance()
                 .signOut(this)
         .addOnCompleteListener(new OnCompleteListener<Void>() {

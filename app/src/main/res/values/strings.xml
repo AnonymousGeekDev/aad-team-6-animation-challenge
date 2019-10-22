@@ -23,4 +23,5 @@
   <string name="login_btn_text">Login</string>
   <string name="welcome_message">Welcome to your diary!</string>
   <string name="required_field">Required field!</string>
+    <string name="welcome_back_user">Welcome back</string>
 </resources>

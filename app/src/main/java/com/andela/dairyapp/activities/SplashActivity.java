@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -17,6 +18,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.andela.dairyapp.R;
 import com.andela.dairyapp.activities.auth.AuthActivity;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -30,7 +33,8 @@ public class SplashActivity extends AppCompatActivity {
     private ObjectAnimator mTextDownwardMovementAnimator;
     private ViewPropertyAnimator mScaleAndBounceAnimator;
 
-
+    FirebaseAuth mFirebaseAuth;
+    FirebaseUser mUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,8 +50,12 @@ public class SplashActivity extends AppCompatActivity {
                         | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                         | View.SYSTEM_UI_FLAG_FULLSCREEN);
 
-        setContentView(R.layout.activity_splash);
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mUser = mFirebaseAuth.getCurrentUser();
 
+
+
+        setContentView(R.layout.activity_splash);
         mAppLogo = findViewById(R.id.app_logo);
         mWelcomeText = findViewById(R.id.intro_message);
         mLoadingProgressAnim = findViewById(R.id.progressBar);
@@ -56,13 +64,16 @@ public class SplashActivity extends AppCompatActivity {
         mWelcomeText.setVisibility(View.GONE);
         mLoadingProgressAnim.setVisibility(View.VISIBLE);
 
+        //Check if it is a returning user
+        if (mUser != null){
+            mWelcomeText.setText(getString(R.string.welcome_back_user));
+        }
 
         launchInitialAnimation();
-
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent toHomeActivity = new Intent(SplashActivity.this, HomeActivity.class);
+                Intent toHomeActivity = new Intent(SplashActivity.this, AuthActivity.class);
                 startActivity(toHomeActivity);
                 finish();
             }
@@ -70,7 +81,6 @@ public class SplashActivity extends AppCompatActivity {
 
 
     }
-
 
     private void launchInitialAnimation() {
         mLogoFadeInAnimator = ObjectAnimator.ofFloat(mAppLogo, "alpha", 0.0f, 1.0f);

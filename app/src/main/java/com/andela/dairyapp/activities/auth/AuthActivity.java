@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import android.widget.Toast;
 import com.andela.dairyapp.R;
 import com.andela.dairyapp.activities.HomeActivity;
 import com.firebase.ui.auth.AuthUI;
+import com.firebase.ui.auth.ErrorCodes;
+import com.firebase.ui.auth.IdpResponse;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,6 +31,7 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class AuthActivity extends AppCompatActivity {
 
@@ -36,6 +40,7 @@ public class AuthActivity extends AppCompatActivity {
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
     private List<AuthUI.IdpConfig> providers;
+    private FirebaseUser mUser;
 
 
     @Override
@@ -68,16 +73,20 @@ public class AuthActivity extends AppCompatActivity {
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                      FirebaseUser user = firebaseAuth.getCurrentUser();
-                      if (user != null){
-                          navigateHome(user);
+                mUser = firebaseAuth.getCurrentUser();
+                      if (mUser != null){
+                          Intent homeIntent = new Intent(AuthActivity.this, HomeActivity.class);
+                          startActivity(homeIntent);
                       } else {
-                          navigateHome(null);
+                          startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
+                                          .setAvailableProviders(providers)
+                                          .setIsSmartLockEnabled(false)// Stop the default google-account-chooser pop
+                                          .build()
+                                  , RC_SIGN_IN);
                       }
             }
         };
     }
-
 
     @Override
     protected void onResume() {
@@ -97,25 +106,26 @@ public class AuthActivity extends AppCompatActivity {
         finish();
     }
 
-    private void navigateHome(FirebaseUser user) {
-        if (user != null) {
-            Intent homeIntent = new Intent(this, HomeActivity.class);
-            startActivity(homeIntent);
-            finish();
-        }else {
-            startActivityForResult(AuthUI.getInstance().createSignInIntentBuilder()
-                            .setAvailableProviders(providers)
-                            .setIsSmartLockEnabled(false)// Stop the default google-account-chooser pop
-                            .build()
-                    , RC_SIGN_IN);
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == RC_SIGN_IN) {
+                IdpResponse response = IdpResponse.fromResultIntent(data);
+                if (resultCode == RESULT_OK) {
+                    Intent homeIntent = new Intent(this, HomeActivity.class);
+                    startActivity(homeIntent);
+                    finish();
+                }else {
+                    if (response == null) {
+                        //Exit app User pressed back button
+                        finish();
+                    }
+                }
+
         }
+
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        mFirebaseAuth.removeAuthStateListener(mAuthListener);
-        System.exit(0);
-        finish();
-    }
+
 }

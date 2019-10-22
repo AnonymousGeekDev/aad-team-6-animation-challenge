@@ -11,6 +11,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -78,12 +79,10 @@ public class HomeActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mUserFirebase = mFirebaseAuth.getCurrentUser();
 
-        /*if (mUserFirebase == null) {
+        if (mUserFirebase == null) {
             startActivity(new Intent(this, AuthActivity.class));
             finish();
-        } else {
-            mUsername = mUserFirebase.getDisplayName();
-        }*/
+        }
 
         notesAdapter = new NotesAdapter(noteList);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
@@ -205,10 +204,11 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void navigateToSignIn(){
-        Intent authIntent = new Intent(HomeActivity.this, AuthActivity.class);
+        Intent authIntent = new Intent(this, AuthActivity.class);
         startActivity(authIntent);
         finish();
     }
+
     private String createAt() {
         Date date = new Date();
         DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
@@ -317,7 +317,7 @@ public class HomeActivity extends AppCompatActivity {
                 break;
             case R.id.logout:
                 logout();
-                return true;
+                break;
             default:
                 break;
         }

@@ -71,19 +71,19 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.mipmap.ic_launcher_round);
+        toolbar.setNavigationIcon(R.mipmap.ic_round_logo);
         setSupportActionBar(toolbar);
 
 
         mFirebaseAuth = FirebaseAuth.getInstance();
         mUserFirebase = mFirebaseAuth.getCurrentUser();
 
-        if (mUserFirebase == null) {
+        /*if (mUserFirebase == null) {
             startActivity(new Intent(this, AuthActivity.class));
             finish();
         } else {
             mUsername = mUserFirebase.getDisplayName();
-        }
+        }*/
 
         notesAdapter = new NotesAdapter(noteList);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);

@@ -41,6 +41,18 @@ public class AuthActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        // Set the content to appear under the system bars so that the
+                        // content doesn't resize when the system bars hide and show.
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        // Hide the nav bar and status bar
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_auth);
 
         //Initialise Firebase instance
@@ -79,6 +91,11 @@ public class AuthActivity extends AppCompatActivity {
         mFirebaseAuth.removeAuthStateListener(mAuthListener);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        finish();
+    }
 
     private void navigateHome(FirebaseUser user) {
         if (user != null) {
@@ -92,5 +109,13 @@ public class AuthActivity extends AppCompatActivity {
                             .build()
                     , RC_SIGN_IN);
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mFirebaseAuth.removeAuthStateListener(mAuthListener);
+        System.exit(0);
+        finish();
     }
 }

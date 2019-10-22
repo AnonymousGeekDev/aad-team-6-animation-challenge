@@ -17,4 +17,5 @@
   <string name="share">Share</string>
   <string name="quit">Quit</string>
   <string name="welcome_message">Welcome to your diary!</string>
+  <string name="required_field">Required field!</string>
 </resources>

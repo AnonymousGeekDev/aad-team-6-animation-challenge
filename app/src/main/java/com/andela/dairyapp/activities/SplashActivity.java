@@ -16,8 +16,9 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.andela.dairyapp.R;
+import com.andela.dairyapp.activities.auth.AuthActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class SplashActivity extends AppCompatActivity {
 
     private ImageView mAppLogo;
     private TextView mWelcomeText;
@@ -33,12 +34,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        View decorView = getWindow().getDecorView();
+        decorView.setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                        // Set the content to appear under the system bars so that the
+                        // content doesn't resize when the system bars hide and show.
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        // Hide the nav bar and status bar
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN);
+
+        setContentView(R.layout.activity_splash);
 
         mAppLogo = findViewById(R.id.app_logo);
         mWelcomeText = findViewById(R.id.intro_message);
         mLoadingProgressAnim = findViewById(R.id.progressBar);
-
 
         mAppLogo.setVisibility(View.GONE);
         mWelcomeText.setVisibility(View.GONE);
@@ -50,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                Intent toHomeActivity = new Intent(MainActivity.this, HomeActivity.class);
+                Intent toHomeActivity = new Intent(SplashActivity.this, HomeActivity.class);
                 startActivity(toHomeActivity);
                 finish();
             }
@@ -83,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         mTextFadeInAnimator = ObjectAnimator.ofFloat(mWelcomeText, "alpha", 0.0f, 1.0f);
         mTextFadeInAnimator.setDuration(ANIMATION_DURATION);
 
-        mTextDownwardMovementAnimator = ObjectAnimator.ofFloat(mWelcomeText, "translationY", 0f, 100f);
+        mTextDownwardMovementAnimator = ObjectAnimator.ofFloat(mWelcomeText, "translationY", 0f, 200f);
         mTextDownwardMovementAnimator.setDuration(ANIMATION_DURATION);
 
         AnimatorSet set = new AnimatorSet();

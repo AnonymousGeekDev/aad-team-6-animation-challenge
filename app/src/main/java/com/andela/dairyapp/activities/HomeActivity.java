@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -29,11 +30,17 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.andela.dairyapp.DairyApplication;
 import com.andela.dairyapp.R;
+import com.andela.dairyapp.activities.auth.AuthActivity;
 import com.andela.dairyapp.adapters.NotesAdapter;
 import com.andela.dairyapp.database.repositories.NoteRepositoryImpl;
 import com.andela.dairyapp.models.Note;
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,17 +58,32 @@ public class HomeActivity extends AppCompatActivity {
     RecyclerView notesRecyclerView;
     TextView emptyTV;
     boolean doubleBackToExitPressedOnce = false;
-    boolean pendingIntroAnimation ;
+    boolean pendingIntroAnimation;
 
+
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthListener;
+    private String mUsername;
+    private FirebaseUser mUserFirebase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.setNavigationIcon(R.mipmap.ic_launcher_round);
+        toolbar.setNavigationIcon(R.mipmap.ic_round_logo);
         setSupportActionBar(toolbar);
 
+
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        mUserFirebase = mFirebaseAuth.getCurrentUser();
+
+        /*if (mUserFirebase == null) {
+            startActivity(new Intent(this, AuthActivity.class));
+            finish();
+        } else {
+            mUsername = mUserFirebase.getDisplayName();
+        }*/
 
         notesAdapter = new NotesAdapter(noteList);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
@@ -78,7 +100,7 @@ public class HomeActivity extends AppCompatActivity {
 
         fab = findViewById(R.id.fab_action_btn);
 
-        AnimatorSet alphaAnimation =(AnimatorSet) AnimatorInflater.loadAnimator(this,R.animator.fab_add_note_anim);
+        AnimatorSet alphaAnimation = (AnimatorSet) AnimatorInflater.loadAnimator(this, R.animator.fab_add_note_anim);
         alphaAnimation.setTarget(fab);
         alphaAnimation.start();
 
@@ -129,13 +151,12 @@ public class HomeActivity extends AppCompatActivity {
                             field_shake.setTarget(eventName);
                             field_shake.start();
 
-                        }else if(TextUtils.isEmpty(event_desc)){
+                        } else if (TextUtils.isEmpty(event_desc)) {
                             // Error message added to the field and animation
                             eventDesc.setError(getResources().getString(R.string.required_field));
                             field_shake.setTarget(eventDesc);
                             field_shake.start();
-                        }else
-                            {
+                        } else {
                             //TODO, save the information in a database or file :-)
                             Note note = new Note();
                             note.setNote_name(event_name);
@@ -162,6 +183,30 @@ public class HomeActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+
+    private void logout() {
+        Toast.makeText(this, "Signing Out", Toast.LENGTH_LONG).show();
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            navigateToSignIn();
+                        } else {
+                            Snackbar.make(notesRecyclerView, "Error happended during sign out! Try again", Snackbar.LENGTH_LONG).show();
+                        }
+                    }
+                });
+
+    }
+
+    private void navigateToSignIn() {
+        Intent authIntent = new Intent(HomeActivity.this, AuthActivity.class);
+        startActivity(authIntent);
+        finish();
     }
 
     private String createAt() {
@@ -228,23 +273,22 @@ public class HomeActivity extends AppCompatActivity {
                             field_shake.setTarget(eventName);
                             field_shake.start();
 
-                        }else if(TextUtils.isEmpty(event_desc)){
+                        } else if (TextUtils.isEmpty(event_desc)) {
                             // Error message added to the field and animation
                             eventDesc.setError(getResources().getString(R.string.required_field));
                             field_shake.setTarget(eventDesc);
                             field_shake.start();
-                        } else {
                             //TODO, save the information in a database or file :-)
                             Note note = new Note();
                             note.setNote_name(event_name);
                             note.setNote_description(event_desc);
-                            Random random = new Random();
-                            int color = Color.argb(255, random.nextInt(256), random.nextInt(256), random.nextInt(256));
-                            note.setColor_code(color);
-                            Date date = new Date();
-                            DateFormat dateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
-                            String date_created = dateFormat.format(date);
-                            note.setCreated_at(date_created);
+                            note.setColor_code(generateColor());
+                            note.setCreated_at(createAt());
+
+                            NoteRepositoryImpl noteRepository =
+                                    ((DairyApplication) saveBtn.getContext().getApplicationContext()).getNoteRepository();
+                            long rowId = noteRepository.insert(note);
+                            note.set_id(Integer.parseInt(String.valueOf(rowId)));
                             boolean success = notesAdapter.addNote(note);
                             if (success) {
                                 dialog.dismiss();
@@ -268,8 +312,14 @@ public class HomeActivity extends AppCompatActivity {
                 Snackbar.make(notesRecyclerView, "Sorting by Z - A...", Snackbar.LENGTH_LONG).show();
                 break;
             case R.id.action_about:
-                Snackbar.make(notesRecyclerView, "About", Snackbar.LENGTH_LONG).show();
+                Snackbar.make(notesRecyclerView, "About", Snackbar.LENGTH_SHORT).show();
+                Intent intent
+                        = new Intent(this, AboutActivity.class);
+                startActivity(intent);
                 break;
+            case R.id.logout:
+                logout();
+                return true;
             default:
                 break;
         }

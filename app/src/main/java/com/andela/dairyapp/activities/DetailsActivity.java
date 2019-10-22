@@ -52,11 +52,11 @@ public class DetailsActivity extends AppCompatActivity {
             //TODO
         }else if(item.getItemId() == R.id.action_share){
             //TODO
-        }else if(item.getItemId() == R.id.action_about){
+        }/*else if(item.getItemId() == R.id.action_about){
             //TODO
         }else if (item.getItemId() == R.id.action_quit){
             //TODO
-        }
+        }*/
         return super.onOptionsItemSelected(item);
     }
 }

@@ -13,12 +13,12 @@
         android:id="@+id/action_share"
         android:title="@string/share"
         app:showAsAction="never"/>
-    <item
+   <!-- <item
         android:id="@+id/action_about"
         android:title="@string/about"
         app:showAsAction="never"/>
     <item
         android:id="@+id/action_quit"
         android:title="@string/quit"
-        app:showAsAction="never"/>
+        app:showAsAction="never"/>-->
 </menu>

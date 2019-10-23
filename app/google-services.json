@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "471844909649-2l0gf917ihqo7ira8tr8cttp6pm8o37h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.andela.dairyapp",
+            "certificate_hash": "dafc2af5270859dda97d0a88dae6d0e7ce9c39f7"
+          }
+        },
+        {
           "client_id": "471844909649-co9pg750l881eiq1na4nmgd3i2obr5sj.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -78,12 +78,10 @@ public class HomeActivity extends AppCompatActivity {
         mFirebaseAuth = FirebaseAuth.getInstance();
         mUserFirebase = mFirebaseAuth.getCurrentUser();
 
-        /*if (mUserFirebase == null) {
+        if (mUserFirebase == null) {
             startActivity(new Intent(this, AuthActivity.class));
             finish();
-        } else {
-            mUsername = mUserFirebase.getDisplayName();
-        }*/
+        }
 
         notesAdapter = new NotesAdapter(noteList);
         notesRecyclerView = findViewById(R.id.notesRecyclerView);
@@ -187,7 +185,7 @@ public class HomeActivity extends AppCompatActivity {
 
 
     private void logout() {
-        Toast.makeText(this, "Signing Out", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Signing Out", Toast.LENGTH_SHORT).show();
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -204,7 +202,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void navigateToSignIn() {
-        Intent authIntent = new Intent(HomeActivity.this, AuthActivity.class);
+        Intent authIntent = new Intent(this, AuthActivity.class);
         startActivity(authIntent);
         finish();
     }
@@ -319,7 +317,7 @@ public class HomeActivity extends AppCompatActivity {
                 break;
             case R.id.logout:
                 logout();
-                return true;
+                break;
             default:
                 break;
         }

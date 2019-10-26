@@ -17,7 +17,9 @@
     <string name="share">Share</string>
     <string name="quit">Quit</string>
 
-    <string name="logout">log out</string>
+
+    <string name="logout">Log out</string>
+    <string name="welcome_back_user">Welcome back</string>
     <string name="password_hint_text">Enter Password</string>
     <string name="email_hint_text">Enter Email Address</string>
     <string name="login_btn_text">Login</string>
